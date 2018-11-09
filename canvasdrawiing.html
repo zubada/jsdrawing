@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <canvas id="canvas" width="800" height="500" style="border:1px solid #c3c3c3;"></canvas>
+    </body>
+    <script>
+        var canvas = document.getElementById('canvas');
+        var ctx = canvas.getContext('2d')
+        
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+        ctx.lineWidth = 10;
+        ctx.strokeStyle = 'black';
+
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        function update() {
+           ctx.beginPath();
+           ctx.arc(lastX, lastY, 10, 0, 2 * Math.PI, true);
+           ctx.fillStyle = "black";
+           ctx.fill();
+           requestAnimationFrame(update);
+        } 
+
+        
+        
+        function draw(e) {
+           if(!isDrawing) return;
+           console.log(e);
+           ctx.beginPath();
+           ctx.moveTo(lastX, lastY);
+           ctx.lineTo(e.offsetX, e.offsetY);
+           ctx.stroke();
+           [lastX, lastY] = [e.offsetX, e.offsetY];
+        }
+
+        function changecolor(e){
+            if (e.keyCode==66){
+                ctx.strokeStyle = 'blue';
+            } 
+            if (e.keyCode==71) {
+                ctx.strokeStyle = 'green';
+            }
+            if (e.keyCode==82) {
+                ctx.strokeStyle = 'red';
+            }
+            if (e.keyCode==89) {
+                ctx.strokeStyle = 'yellow';
+            }
+            e.preventDefault();
+        };
+
+        function changesize(e){
+            if (e.keyCode==38){
+                ctx.lineWidth += 5;
+            } 
+            if (e.keyCode==40) {
+                ctx.lineWidth -= 5;
+            }   
+            e.preventDefault();
+        }
+
+        function clear(e){
+            if (e.keyCode==32){
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+            e.preventDefault();
+        }
+
+        canvas.addEventListener('mousedown', (e) => {
+            isDrawing = true;
+            [lastX, lastY] = [e.offsetX, e.offsetY];
+        });
+
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', () => isDrawing = false);
+        canvas.addEventListener('mouseout', () => isDrawing = false);
+        window.addEventListener('keydown',(e)=>{
+            console.log(e.keyCode);
+            changecolor(e);
+            changesize(e);
+            clear(e);
+        });
+    </script>
+</html>
